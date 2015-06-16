@@ -10,10 +10,10 @@ class Tokenizer
   constructor: ->
     kuromoji
     .builder(dicPath: 'node_modules/kuromoji/dist/dict/')
-    .build (err, tokenizer) => @tokenizer = tokenizer
+    .build (err, tokenizer) => @_tokenizer = tokenizer
 
-  tokenize: (text) ->
-    if @tokenizer then @tokenizer.tokenize text
+  tokenize: (text, cb) ->
+    if @_tokenizer then cb @_tokenizer.tokenize text
 
 class Brain
   constructor: (brain, random) ->
@@ -56,8 +56,7 @@ tokenizer = new Tokenizer()
 module.exports = (robot) ->
   robot.hear /(.+)/, (msg) ->
     brain = new Brain(robot.brain, msg.random)
-    tokens = tokenizer.tokenize msg.message.text
-    if tokens
+    tokenizer.tokenize msg.message.text, (tokens) ->
       saying = brain.say tokens
       msg.send saying if saying
       brain.learn tokens
