@@ -54,9 +54,9 @@ class Brain
 tokenizer = new Tokenizer()
 
 module.exports = (robot) ->
-  robot.hear /(.+)/, (msg) ->
-    brain = new Brain(robot.brain, msg.random)
-    tokenizer.tokenize msg.message.text, (tokens) ->
+  robot.hear /(.+)/, (res) ->
+    brain = new Brain(robot.brain, res.random)
+    tokenizer.tokenize res.message.text, (tokens) ->
       saying = brain.say tokens
-      msg.send saying if saying
+      res.send saying if saying
       brain.learn tokens
